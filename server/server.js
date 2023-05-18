@@ -1,27 +1,27 @@
 const express = require('express');
-const path = require('path'); 
-const cors = require('cors')
+const path = require('path');
+const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
 
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'client', 'build')));
 
-// middleware
-app.use(cors(), express.json(), express.urlencoded({ extended: true }), express.static(path.join(__dirname, 'client', 'build')));
-
-app.get('/', async (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
 });
 
-// load .env vars
-require('dotenv').config()
-// access the .env vars
-const port = process.env.PORT
+// Load .env vars
+const port = process.env.PORT || 3000;
 
 // Require / import the file
-require("./config/mongoose.config")
+require('./config/mongoose.config');
 
-// require the routes here to run
-require("./routes/pirate.routes")(app)
+// Require the routes here to run
+require('./routes/pirate.routes')(app);
 
-
-app.listen(port, () => console.log(`Listening on port ${port} for REQuests to RESpond to.`));
+app.listen(port, () => console.log(`Listening on port ${port} for requests to respond to.`));
